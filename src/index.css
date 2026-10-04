@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base mobile hardening (desktop appearance untouched) ---------- */
+@layer base {
+  html {
+    /* Prevent mobile browsers from auto-inflating text (e.g. landscape). */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    /* Remove the grey flash on taps in mobile WebKit without affecting desktop. */
+    -webkit-tap-highlight-color: transparent;
+    /* Clip accidental horizontal overflow (e.g. wide charts/maps) without
+       creating a scroll container, so position:sticky keeps working. */
+    overflow-x: clip;
+  }
+
+  img,
+  svg,
+  video,
+  iframe {
+    max-width: 100%;
+  }
+
+  /* iOS zooms into any focused input smaller than 16px. Bumping form-control
+     font size to 16px on phones/tablets stops the annoying auto-zoom while
+     leaving desktop typography exactly as designed. */
+  @media (max-width: 1023px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@keyframes nav-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Shared utilities ---------- */
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Respect notched phones / home-indicator for fixed drawers & sheets. */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@layer components {
+  .skeleton {
+    @apply relative overflow-hidden bg-gray-200/70 rounded-md;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    animation: skeleton-shimmer 1.4s infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
